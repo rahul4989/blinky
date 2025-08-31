@@ -1,0 +1,39 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="eyeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4F46E5;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#7C3AED;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="pupilGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1F2937;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#374151;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background circle -->
+  <circle cx="256" cy="256" r="240" fill="url(#eyeGradient)" stroke="#E5E7EB" stroke-width="8"/>
+  
+  <!-- Eye shape -->
+  <ellipse cx="256" cy="256" rx="160" ry="100" fill="#FFFFFF" stroke="#D1D5DB" stroke-width="4"/>
+  
+  <!-- Iris -->
+  <circle cx="256" cy="256" r="60" fill="#3B82F6" stroke="#1E40AF" stroke-width="2"/>
+  
+  <!-- Pupil -->
+  <circle cx="256" cy="256" r="30" fill="url(#pupilGradient)"/>
+  
+  <!-- Light reflection -->
+  <ellipse cx="240" cy="240" rx="12" ry="16" fill="#FFFFFF" opacity="0.8"/>
+  
+  <!-- Eyelashes -->
+  <path d="M 120 220 Q 140 200 160 210" stroke="#374151" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <path d="M 140 200 Q 160 180 180 190" stroke="#374151" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <path d="M 332 190 Q 352 180 372 200" stroke="#374151" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <path d="M 352 210 Q 372 200 392 220" stroke="#374151" stroke-width="3" fill="none" stroke-linecap="round"/>
+  
+  <!-- Bottom eyelashes -->
+  <path d="M 160 310 Q 140 320 120 300" stroke="#374151" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <path d="M 180 320 Q 160 330 140 310" stroke="#374151" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <path d="M 372 310 Q 352 330 332 320" stroke="#374151" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <path d="M 392 300 Q 372 320 352 310" stroke="#374151" stroke-width="3" fill="none" stroke-linecap="round"/>
+</svg>

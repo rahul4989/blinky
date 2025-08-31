@@ -1,0 +1,98 @@
+{
+  "name": "blinky",
+  "version": "1.0.0",
+  "description": "Cross-platform desktop app that reminds users to blink for better eye health using AI-powered face detection",
+  "author": "Rahul Kalra",
+  "license": "MIT",
+  "keywords": [
+    "blink",
+    "eye-health",
+    "computer-vision",
+    "desktop-app",
+    "electron",
+    "health",
+    "productivity",
+    "ai",
+    "face-detection"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rahul4989/blinky.git"
+  },
+  "homepage": "./",
+  "main": "dist/electron/main.js",
+  "scripts": {
+    "start": "concurrently \"npm run react:start\" \"wait-on http://localhost:3000 && npm run electron:start\"",
+    "start:electron-only": "npm run build && FORCE_PROD=true npm run electron:start",
+    "react:start": "react-scripts start",
+    "react:build": "react-scripts build",
+    "electron:start": "electron .",
+    "electron:dev": "ELECTRON_IS_DEV=1 electron .",
+    "build": "npm run react:build && npm run electron:build",
+    "electron:build": "tsc electron/main.ts --outDir dist/electron --target es2020 --module commonjs --moduleResolution node --esModuleInterop --skipLibCheck && cp electron/preload.js dist/electron/",
+    "dist": "npm run build && electron-builder",
+    "dist:mac": "npm run build && electron-builder --mac",
+    "dist:win": "npm run build && electron-builder --win",
+    "dist:linux": "npm run build && electron-builder --linux"
+  },
+  "build": {
+    "appId": "me.rahulkalra.blinky",
+    "productName": "Blinky",
+    "copyright": "Copyright © 2025 Rahul Kalra",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "build/**/*",
+      "dist/electron/**/*",
+      "node_modules/**/*"
+    ],
+    "extraMetadata": {
+      "main": "dist/electron/main.js"
+    },
+    "mac": {
+      "category": "public.app-category.healthcare-fitness"
+    },
+    "win": {
+      "target": "nsis"
+    },
+    "linux": {
+      "target": "AppImage"
+    }
+  },
+  "dependencies": {
+    "@mediapipe/camera_utils": "^0.3.1675466862",
+    "@mediapipe/drawing_utils": "^0.3.1620248257",
+    "@mediapipe/face_mesh": "^0.4.1633559619",
+    "electron-store": "^8.1.0",
+    "node-datachannel": "^0.29.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.5.0",
+    "@types/react": "^18.2.21",
+    "@types/react-dom": "^18.2.7",
+    "autoprefixer": "^10.4.15",
+    "concurrently": "^8.2.0",
+    "electron": "^25.6.0",
+    "electron-builder": "^24.6.3",
+    "postcss": "^8.4.28",
+    "react-scripts": "5.0.1",
+    "tailwindcss": "^3.3.3",
+    "typescript": "^4.9.5",
+    "wait-on": "^7.0.1"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
