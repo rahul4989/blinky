@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain, screen } from 'electron';
+import { app, BrowserWindow, ipcMain, screen, globalShortcut } from 'electron';
 import * as path from 'path';
 
 // Force production mode when we want to use built files
@@ -103,6 +103,8 @@ function createOverlayWindow(opacity: number = 0.6): void {
 
   isOverlayVisible = true;
 
+  const previouslyFocused = BrowserWindow.getFocusedWindow();
+
   const primaryDisplay = screen.getPrimaryDisplay();
   const { width, height } = primaryDisplay.workAreaSize;
 
@@ -118,9 +120,13 @@ function createOverlayWindow(opacity: number = 0.6): void {
     movable: false,
     minimizable: false,
     maximizable: false,
-    fullscreen: true,
+    fullscreen: false, // avoid app activation on macOS
     kiosk: false,
+    focusable: false, // do not steal focus from current app
+    acceptFirstMouse: true,
     transparent: true,
+    hasShadow: false,
+    show: false, // show later with showInactive()
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
@@ -209,18 +215,36 @@ function createOverlayWindow(opacity: number = 0.6): void {
 
   overlayWindow.loadURL(`data:text/html;charset=utf-8,${encodeURIComponent(overlayHTML)}`);
 
+  // Keep overlay above all apps and full-screen spaces without stealing focus
+  try {
+    overlayWindow.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
+    overlayWindow.setAlwaysOnTop(true, 'screen-saver');
+  } catch {}
+
+  overlayWindow.once('ready-to-show', () => {
+    try {
+      overlayWindow?.showInactive();
+    } catch {}
+  });
+
 
   overlayWindow.on('closed', () => {
     overlayWindow = null;
     isOverlayVisible = false; // Reset state
+    // Unregister ESC shortcut
+    try { globalShortcut.unregister('Escape'); } catch {}
+    // Restore focus to previously focused Electron window if applicable
+    try {
+      if (previouslyFocused && !previouslyFocused.isDestroyed()) {
+        previouslyFocused.focus();
+      }
+    } catch {}
   });
 
-  // Handle escape key
-  overlayWindow.webContents.on('before-input-event', (event, input) => {
-    if (input.key === 'Escape') {
-      closeOverlayWindow('escape');
-    }
-  });
+  // Register global ESC to close overlay without focusing it
+  try {
+    globalShortcut.register('Escape', () => closeOverlayWindow('escape'));
+  } catch {}
 }
 
 function closeOverlayWindow(reason: string = 'unknown'): void {

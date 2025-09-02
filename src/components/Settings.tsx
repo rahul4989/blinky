@@ -120,15 +120,15 @@ const Settings: React.FC<SettingsProps> = ({
         <input
           type="range"
           min="5"
-          max="120"
-          step="5"
+          max="20"
+          step="1"
           value={settings.timerInterval}
           onChange={(e) => updateSetting('timerInterval', parseInt(e.target.value))}
           className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
         />
         <div className="flex justify-between text-xs text-gray-500">
           <span>5s</span>
-          <span>120s</span>
+          <span>20s</span>
         </div>
       </div>
 
