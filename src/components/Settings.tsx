@@ -9,9 +9,11 @@ declare global {
         set: (key: string, value: any) => Promise<boolean>;
       };
       overlay: {
-        show: (opacity: number) => Promise<boolean>;
+        show: (opacity: number) => Promise<{ ok: boolean; alreadyVisible?: boolean } | boolean>;
         close: (reason?: string) => Promise<boolean>;
         onClosed: (callback: (event: any, reason?: string) => void) => void;
+        offClosed?: (callback: (event: any, reason?: string) => void) => void;
+        onceClosed?: (callback: (event: any, reason?: string) => void) => void;
       };
       backgroundBlink?: () => Promise<boolean>;
       onTimerReset?: (callback: () => void) => void;

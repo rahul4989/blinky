@@ -88,8 +88,16 @@ function createBackgroundCameraWindow(): void {
 }
 
 function createOverlayWindow(opacity: number = 0.6): void {
-  // Prevent multiple overlays
-  if (overlayWindow || isOverlayVisible) {
+  // Prevent multiple overlays; clean up stale references if needed
+  if (overlayWindow) {
+    if (overlayWindow.isDestroyed()) {
+      overlayWindow = null;
+      isOverlayVisible = false;
+    } else {
+      return;
+    }
+  }
+  if (isOverlayVisible) {
     return;
   }
 
@@ -286,8 +294,12 @@ ipcMain.handle('store-set', async (event, key: string, value: any) => {
 
 // Handle overlay IPC messages
 ipcMain.handle('show-overlay', async (event, opacity: number) => {
-  createOverlayWindow(opacity);
-  return true;
+  const alreadyVisible = isOverlayVisible && overlayWindow && !overlayWindow.isDestroyed();
+  if (!alreadyVisible) {
+    createOverlayWindow(opacity);
+    return { ok: true, alreadyVisible: false };
+  }
+  return { ok: true, alreadyVisible: true };
 });
 
 ipcMain.handle('close-overlay', async (event, reason: string = 'app-request') => {

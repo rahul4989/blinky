@@ -38,8 +38,12 @@ const App: React.FC = () => {
   // Show fullscreen overlay
   const showFullscreenOverlay = useCallback(async () => {
     if (window.electronAPI?.overlay && !showOverlay) {
-      await window.electronAPI.overlay.show(settings.overlayOpacity);
-      setShowOverlay(true);
+      try {
+        const res = await window.electronAPI.overlay.show(settings.overlayOpacity);
+        // Reflect overlay visibility locally regardless of prior state
+        setShowOverlay(true);
+      } catch (error) {
+      }
     }
   }, [settings.overlayOpacity, showOverlay]);
 
@@ -55,14 +59,17 @@ const App: React.FC = () => {
     }
   }, [settings.timerInterval]);
 
-  // Listen for overlay close events from Electron
+  // Listen for overlay close events from Electron with cleanup
   useEffect(() => {
-    if (window.electronAPI?.overlay) {
-      window.electronAPI.overlay.onClosed((event: any, reason?: string) => {
-        setShowOverlay(false);
-        setTimeLeft(settings.timerInterval);
-      });
-    }
+    if (!window.electronAPI?.overlay) return;
+    const handler = (_event: any, _reason?: string) => {
+      setShowOverlay(false);
+      setTimeLeft(settings.timerInterval);
+    };
+    window.electronAPI.overlay.onClosed(handler);
+    return () => {
+      window.electronAPI.overlay.offClosed?.(handler);
+    };
   }, [settings.timerInterval]);
 
   // Listen for timer reset events from background blinks

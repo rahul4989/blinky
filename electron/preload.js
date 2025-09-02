@@ -10,7 +10,9 @@ contextBridge.exposeInMainWorld('electronAPI', {
   overlay: {
     show: (opacity) => ipcRenderer.invoke('show-overlay', opacity),
     close: (reason) => ipcRenderer.invoke('close-overlay', reason),
-    onClosed: (callback) => ipcRenderer.on('overlay-closed', callback)
+    onClosed: (callback) => ipcRenderer.on('overlay-closed', callback),
+    offClosed: (callback) => ipcRenderer.removeListener('overlay-closed', callback),
+    onceClosed: (callback) => ipcRenderer.once('overlay-closed', callback)
   },
   closeOverlay: (reason) => ipcRenderer.invoke('close-overlay', reason),
   backgroundBlink: () => ipcRenderer.invoke('background-blink'),
